@@ -13,9 +13,28 @@ echo "----------------------------------------"
 echo "Copying Cerebras SM skeleton files"
 tar -C $TOPDIR/cerebras/sm-skel -cf - . | (cd $TARGET && tar xf -)
 
+#
+# Following probably should be done in a script and not part of interfaces file
+#
 echo "Enabling ETH0 at startup"
-echo "auto eth0" >> $TARGET/etc/network/interfaces
-echo "iface eth0 inet dhcp" >> $TARGET/etc/network/interfaces
+cat << EOM > $TARGET/etc/network/interfaces
+#
+# Temporary hack
+#
+
+auto lo
+iface lo inet loopback
+auto eth0
+iface eth0 inet dhcp
+auto eth2
+iface eth2 inet static
+    address 10.0.0.1
+    netmask 255.255.255.252
+auto eth3
+iface eth3 inet static
+    address 10.0.0.5
+    netmask 255.255.255.252
+EOM
 
 echo "Enabling SSH root access without password"
 sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin yes/' \
