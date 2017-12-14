@@ -24,15 +24,13 @@ cat << EOM > $TARGET/etc/network/interfaces
 
 auto lo
 iface lo inet loopback
-auto eth0
-iface eth0 inet dhcp
-auto eth2
-iface eth2 inet static
-    address 10.0.0.2
-    netmask 255.255.255.252
-auto eth3
-iface eth3 inet static
+auto ni0
+iface ni0 inet static
     address 10.0.0.6
+    netmask 255.255.255.252
+auto ni1
+iface ni1 inet static
+    address 10.0.0.2
     netmask 255.255.255.252
 EOM
 
