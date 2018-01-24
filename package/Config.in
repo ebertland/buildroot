@@ -2179,4 +2179,8 @@ menu "Text editors and viewers"
 	source "package/vim/Config.in"
 endmenu
 
+menu "Cerebras stuff"
+	source "package/cerebras/Config.in"
+endmenu
+
 endmenu

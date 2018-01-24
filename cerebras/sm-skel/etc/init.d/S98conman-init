@@ -1,0 +1,35 @@
+#!/bin/bash -p
+
+#
+# COPYRIGHT 2018, Cerebras Systems, Inc.
+#
+
+NAME=conmand
+CONMAND=/sbin/conmand
+CONF=/etc/conman.conf
+OPTIONS="seropts=\"115200n8\""
+
+start()
+{
+    $CONMAND -c $CONF $OPTIONS && echo "OK" || echo "FAIL"
+}
+
+stop()
+{
+    $CONMAND -k && echo "OK" || echo "FAIL"
+}
+
+
+case "$1" in
+    start)
+        start ;;
+    stop)
+        stop ;;
+    restart|reload)
+        stop; start ;;
+    *)
+        echo "Usage: %0 {start|stop|restart}"
+        exit 1
+esac
+
+exit 0

@@ -1,0 +1,7 @@
+config BR2_PACKAGE_CONMAN
+        bool "conman"
+        help
+
+          Console manager for serial devices
+
+          https://github.com/dun/conman.git
