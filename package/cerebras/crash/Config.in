@@ -1,7 +1,8 @@
 config BR2_PACKAGE_CRASH
         bool "crash"
+        depends on BR2_PACKAGE_ZLIB
+        depends on BR2_PACKAGE_READLINE
         help
-
           Crash is a tool for debugging running linux kernels or kernel crash dumps
 
           https://github.com/crash-utility

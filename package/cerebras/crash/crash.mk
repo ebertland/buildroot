@@ -8,6 +8,8 @@ CRASH_VERSION_NUMBER = 7.1.2
 CRASH_GDB_VERSION = 7.6
 CRASH_GDB_SOURCE = gdb-$(CRASH_GDB_VERSION).tar.gz
 
+CRASH_DEPENDENCIES += zlib readline
+
 #
 # crash build automatically downloads GDB as part of its build. Force it to
 # use saved local copy of same GDB version
