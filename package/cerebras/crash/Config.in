@@ -1,0 +1,7 @@
+config BR2_PACKAGE_CRASH
+        bool "crash"
+        help
+
+          Crash is a tool for debugging running linux kernels or kernel crash dumps
+
+          https://github.com/crash-utility

@@ -1,1 +1,2 @@
 source "package/cerebras/conman/Config.in"
+source "package/cerebras/crash/Config.in"

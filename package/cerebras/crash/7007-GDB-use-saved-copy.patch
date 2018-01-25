@@ -1,0 +1,31 @@
+From a4a58a9e10de3637f01ba1955c6af3a2d67c58f6 Mon Sep 17 00:00:00 2001
+From: Tejas Khatiwala <tejas@cerebras.net>
+Date: Wed, 24 Jan 2018 21:08:39 +0000
+Subject: [PATCH] Don't download GDB everytime. Instead use saved copy.
+
+---
+ Makefile | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 7a522fc..dcbf3ef 100644
+--- a/Makefile
++++ b/Makefile
+@@ -251,10 +251,10 @@ gdb_unzip:
+ 	@rm -f gdb.files
+ 	@for FILE in ${GDB_FILES} dummy; do\
+ 	  echo $$FILE >> gdb.files; done
+-	@if [ ! -f ${GDB}.tar.gz ] && [ ! -f /usr/bin/wget ]; then \
+-	  echo /usr/bin/wget is required to download ${GDB}.tar.gz; echo; exit 1; fi
+-	@if [ ! -f ${GDB}.tar.gz ] && [ -f /usr/bin/wget ]; then \
+-	  wget http://ftp.gnu.org/gnu/gdb/${GDB}.tar.gz; fi
++	# @if [ ! -f ${GDB}.tar.gz ] && [ ! -f /usr/bin/wget ]; then \
++	#  echo /usr/bin/wget is required to download ${GDB}.tar.gz; echo; exit 1; fi
++	# @if [ ! -f ${GDB}.tar.gz ] && [ -f /usr/bin/wget ]; then \
++	#  wget http://ftp.gnu.org/gnu/gdb/${GDB}.tar.gz; fi
+ 	@tar --exclude-from gdb.files -xvzmf ${GDB}.tar.gz
+ 	@make --no-print-directory gdb_patch
+ 
+-- 
+1.8.3.1
+
