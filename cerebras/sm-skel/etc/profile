@@ -1,0 +1,40 @@
+#
+# COPYRIGHT 2018, Cerebras Systems, Inc.
+#
+
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+
+update_hostname()
+{
+    local ifname=$1
+
+    [[ -z "$ifname" ]] && return 1
+
+    [[ "$(cat /sys/class/net/$ifname/operstate)" != "up" ]] && return 1
+
+    ipaddr=$(/sbin/ifconfig $ifname | grep 'inet addr' | cut -d: -f2 | awk '{print $1}')
+    hname=$(/usr/bin/nslookup $ipaddr | grep $ipaddr | grep Address | awk '{print $NF}')
+    [[ -z "$hname" ]] && return 1
+    /bin/hostname $hname
+    return $?
+}
+
+if [ "$PS1" ]; then
+        update_hostname "eth0"
+	if [ "`id -u`" -eq 0 ]; then
+		export PS1='[\u@\h \W]# '
+	else
+		export PS1='[\u@\h \W]$ '
+	fi
+fi
+
+export PAGER='/bin/more '
+export EDITOR='/bin/vi'
+
+# Source configuration files from /etc/profile.d
+for i in /etc/profile.d/*.sh ; do
+	if [ -r "$i" ]; then
+		. $i
+	fi
+	unset i
+done
