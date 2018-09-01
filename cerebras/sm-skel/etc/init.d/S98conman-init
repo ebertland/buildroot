@@ -16,7 +16,7 @@ start()
 
 stop()
 {
-    $CONMAND -k && echo "OK" || echo "FAIL"
+    $CONMAND -k -c $CONF && echo "OK" || echo "FAIL"
 }
 
 
