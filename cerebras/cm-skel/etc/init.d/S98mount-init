@@ -1,0 +1,67 @@
+#!/bin/sh
+
+#
+# COPYRIGHT 2018, Cerebras Systems, Inc.
+#
+
+SM_ETH2=10.0.0.1
+NFS_EXPORT=$SM_ETH2:/
+NFS_DIR=/nfs
+
+is_nfs_mounted()
+{
+    local dir=$1
+
+    mount -v | grep -q "$dir" && return 0 || return 1
+}
+
+mount_nfs_on_dir()
+{
+    local dir=$1
+    local sz=$2
+
+    if ! is_nfs_mounted $dir; then
+        mkdir -p $dir
+        mount -t nfs4 $NFS_EXPORT $dir
+    fi
+
+    if [[ $? -ne 0 ]]; then
+        echo "failed to mount (nfs) $dir"
+        return 1
+    fi
+    return 0
+}
+
+start()
+{
+    echo -n "Mounting $NFS_EXPORT on $NFS_DIR.. "
+
+    #
+    # Mount nfs for /warmboot and /vpd
+    #
+    mount_nfs_on_dir $NFS_DIR
+
+    [[ $? -eq  0 ]] && echo "OK"
+}
+
+stop()
+{
+    echo -n "Un-mounting $NFS_EXPORT (from $NFS_DIR).. "
+    is_nfs_mounted $NFS_DIR && umount $NFS_DIR
+
+    echo "OK"
+}
+
+case "$1" in
+    start)
+        start ;;
+    stop)
+        stop ;;
+    restart|reload)
+        stop; start ;;
+    *)
+        echo "Usage: %0 {start|stop|restart}"
+        exit 1
+esac
+
+exit $?
