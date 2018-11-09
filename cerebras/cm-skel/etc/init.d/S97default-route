@@ -8,12 +8,12 @@ NAME=iptablesinit
 
 start()
 {
-    route add default gw 10.0.0.1
+    /sbin/route add default gw 10.0.0.1
 }
 
 stop()
 {
-    route del default gw 10.0.0.1
+    /sbin/route del default gw 10.0.0.1
 }
 
 
