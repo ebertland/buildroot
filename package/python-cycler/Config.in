@@ -1,0 +1,5 @@
+config BR2_PACKAGE_PYTHON_CYCLER
+	bool "python-cycler"
+	select BR2_PACKAGE_PYTHON_SIX
+	help
+	  Composable style cycles

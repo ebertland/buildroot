@@ -1,0 +1,5 @@
+config BR2_PACKAGE_PYTHON_PLUGGY
+	bool "python-pluggy"
+	select BR2_PACKAGE_PYTHON_SETUPTOOLS_SCM
+	help
+	  pluggy provides plugin and hook calling mechanisms

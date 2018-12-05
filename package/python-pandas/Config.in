@@ -1,0 +1,7 @@
+config BR2_PACKAGE_PYTHON_PANDAS
+	bool "python-pandas"
+	select BR2_PACKAGE_PYTHON_DATEUTIL
+	select BR2_PACKAGE_PYTHON_NUMPY
+	select BR2_PACKAGE_PYTHON_PYTZ
+	help
+	   Powerful data structures for data analysis, time series, and statistics

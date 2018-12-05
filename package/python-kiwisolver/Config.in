@@ -1,0 +1,5 @@
+config BR2_PACKAGE_PYTHON_KIWISOLVER
+	bool "python-kiwisolver"
+	select BR2_PACKAGE_PYTHON_SETUPTOOLS
+	help
+	   A fast implementation of the Cassowary constraint solver

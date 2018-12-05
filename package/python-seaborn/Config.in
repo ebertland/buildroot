@@ -1,0 +1,8 @@
+config BR2_PACKAGE_PYTHON_SEABORN
+	bool "python-seaborn"
+	select BR2_PACKAGE_PYTHON_NUMPY
+	select BR2_PACKAGE_PYTHON_PANDAS
+	select BR2_PACKAGE_PYTHON_SCIPY
+	select BR2_PACKAGE_PYTHON_MATPLOTLIB
+	help
+	   Statistical data visualization

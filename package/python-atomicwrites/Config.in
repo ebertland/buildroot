@@ -1,0 +1,4 @@
+config BR2_PACKAGE_PYTHON_ATOMICWRITES
+	bool "python-atomicwrites"
+	help
+        atomic file writes
