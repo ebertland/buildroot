@@ -10,6 +10,17 @@ TOPDIR=$(pwd)
 echo "Running Cerebras SM post build script..."
 echo "----------------------------------------"
 
+echo "Moving udev init script"
+if [ -f ${TARGET}/etc/init.d/S10udev ]
+then
+    mv -f ${TARGET}/etc/init.d/{S10udev,S99udev}
+fi
+if [ ! -f ${TARGET}/etc/init.d/S99udev ]
+then
+    echo ${TARGET}/etc/init.d/S99udev is missing
+    exit 1
+fi
+
 echo "Copying Cerebras SM skeleton files"
 tar -C $TOPDIR/cerebras/sm-skel -cf - . | (cd $TARGET && tar xf -)
 
