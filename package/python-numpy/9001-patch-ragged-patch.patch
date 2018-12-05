@@ -1,0 +1,17 @@
+diff -uNr python-numpy-1.15.4.orig/numpy/distutils/command/build_ext.py python-numpy-1.15.4/numpy/distutils/command/build_ext.py
+--- python-numpy-1.15.4.orig/numpy/distutils/command/build_ext.py	2018-11-03 10:49:58.000000000 -0700
++++ python-numpy-1.15.4/numpy/distutils/command/build_ext.py	2018-11-16 14:04:17.489198732 -0800
+@@ -442,9 +442,12 @@
+             unlinkable_fobjects = []
+             objects = c_objects + f_objects
+ 
++        from distutils.sysconfig import get_config_vars
++
+         if ext.extra_objects:
+             objects.extend(ext.extra_objects)
+-        extra_args = ext.extra_link_args or []
++        extra_args = get_config_vars('LDSHARED')[0].split(' ')[1:]
++        extra_args += ext.extra_link_args or []
+         libraries = self.get_libraries(ext)[:]
+         library_dirs = ext.library_dirs[:]
+ 
