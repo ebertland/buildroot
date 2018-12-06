@@ -45,8 +45,29 @@ iface ni1 inet static
     netmask 255.255.255.252
 EOM
 
-echo "Enabling SSH root access without password"
-sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin yes/' \
-    $TARGET/etc/ssh/sshd_config
-sed -i 's/^#PermitEmptyPasswords no/PermitEmptyPasswords yes/' \
-    $TARGET/etc/ssh/sshd_config
+#
+# Rewrite sshd_config by adding Cerebras settings
+# to the end of the file.  This method works
+# even if this script is executed multiple times.
+#
+
+echo "Updating sshd_config"
+
+# delete those that are changed or added
+sed -i -f - ${TARGET}/etc/ssh/sshd_config <<<'
+/^#\?PermitRootLogin[ \t]\+/d
+/^#\?PermitEmptyPasswords[ \t]\+/d
+/^#\?X11Forwarding[ \t]\+/d
+/^#\?XauthLocation[ \t]\+/d
+/^# Cerebras config/d
+${/^.*$/{G;}}
+'
+
+# create new values
+cat >> ${TARGET}/etc/ssh/sshd_config <<'EOF'
+# Cerebras config
+PermitRootLogin yes
+PermitEmptyPasswords yes
+X11Forwarding yes
+XauthLocation /usr/bin/xauth
+EOF
