@@ -18,10 +18,11 @@ TK_DEPENDENCIES = tcl xlib_libX11 xlib_libXft
 # hopefully our strtod is not buggy
 TK_CONF_ENV = tcl_cv_strtod_buggy=no
 
-TK_CONF_OPTS = --disable-rpath \
-	--with-tcl=$(BUILD_DIR)/tcl-$(TCL_VERSION)/unix \
-	--x-includes=$(STAGING_DIR)/usr/include \
-	--x-libraries=$(STAGING_DIR)/usr/lib
+TK_CONF_OPTS += --disable-rpath
+TK_CONF_OPTS += --with-tcl=$(BUILD_DIR)/tcl-$(TCL_VERSION)/unix
+TK_CONF_OPTS += --x-includes=$(STAGING_DIR)/usr/include
+TK_CONF_OPTS += --x-libraries=$(STAGING_DIR)/usr/lib
+TK_CONF_OPTS += --disable-xft
 
 define TK_WISH_SYMLINK
 	ln -sf /usr/bin/wish$(TK_VERSION_MAJOR) $(TARGET_DIR)/usr/bin/wish
