@@ -15,9 +15,10 @@ PYTHON_NUMPY_ENV += FC=$(TARGET_CROSS)gfortran
 
 PYTHON_NUMPY_BUILD_OPTS = --fcompiler=gnu95
 
-# force openblas
+ifeq ($(BR2_PACKAGE_OPENBLAS),y)
 PYTHON_NUMPY_DEPENDENCIES += openblas
 PYTHON_NUMPY_SITE_CFG_LIBS += openblas
+endif
 
 ifeq ($(BR2_PACKAGE_LAPACK),y)
 PYTHON_NUMPY_DEPENDENCIES += lapack
