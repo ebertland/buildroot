@@ -28,6 +28,7 @@ Host cm
 	ServerAliveCountMax 10
 	ServerAliveInterval  6
 	LogLevel ERROR
+	ForwardX11 yes
 
 # Host *
 #   ForwardAgent no
