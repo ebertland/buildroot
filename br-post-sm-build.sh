@@ -13,11 +13,11 @@ echo "----------------------------------------"
 echo "Moving udev init script"
 if [ -f ${TARGET}/etc/init.d/S10udev ]
 then
-    mv -f ${TARGET}/etc/init.d/{S10udev,S99udev}
+    mv -f ${TARGET}/etc/init.d/{S10udev,S35udev}
 fi
-if [ ! -f ${TARGET}/etc/init.d/S99udev ]
+if [ ! -f ${TARGET}/etc/init.d/S35udev ]
 then
-    echo ${TARGET}/etc/init.d/S99udev is missing
+    echo ${TARGET}/etc/init.d/S35udev is missing
     exit 1
 fi
 
