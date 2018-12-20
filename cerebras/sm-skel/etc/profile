@@ -4,23 +4,7 @@
 
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin
 
-update_hostname()
-{
-    local ifname=$1
-
-    [[ -z "$ifname" ]] && return 1
-
-    [[ "$(cat /sys/class/net/$ifname/operstate)" != "up" ]] && return 1
-
-    ipaddr=$(/sbin/ifconfig $ifname | grep 'inet addr' | cut -d: -f2 | awk '{print $1}')
-    hname=$(/usr/bin/nslookup $ipaddr | grep $ipaddr | grep Address | awk '{print $NF}')
-    [[ -z "$hname" ]] && return 1
-    /bin/hostname $hname
-    return $?
-}
-
 if [ "$PS1" ]; then
-        update_hostname "eth0"
 	if [ "`id -u`" -eq 0 ]; then
 		export PS1='[\u@\h \W]# '
 	else

@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -p
+
+ifname=eth0
+
+[ "$(</sys/class/net/${ifname}/operstate)" = "up" ] ||
+    exit 1
+
+ipaddr=$(
+    ip addr show dev ${ifname} 2>/dev/null |
+    awk '
+        $1 == "inet" {
+            i=split($2,a,"/");
+            print a[1];
+    }'
+)
+
+[ "${ipaddr}" ] || exit 1
+
+hname=$(
+    host ${ipaddr} 2>/dev/null | 
+    awk '
+        /domain name pointer/ {
+            split($NF,a,".");
+            print a[1];
+        }
+    '
+)
+
+[ "${hname}" ] || exit 1
+
+hostname ${hname}
