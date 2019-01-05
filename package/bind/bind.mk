@@ -79,6 +79,9 @@ ifeq ($(BR2_PACKAGE_PYTHON)$(BR2_PACKAGE_PYTHON3),)
 BIND_CONF_OPTS += --with-python=no
 endif
 
+# force off
+BIND_CONF_OPTS += --with-python=no
+
 ifeq ($(BR2_PACKAGE_READLINE),y)
 BIND_DEPENDENCIES += readline
 else
