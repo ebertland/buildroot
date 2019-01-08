@@ -5,7 +5,8 @@
 #
 
 NAME=smproxy
-CM_ADDR=10.0.0.6:22
+read -r CM_ADDR < /etc/cm_addr
+CM_PORT=22
 PROXY_PORT=2222
 
 start()
@@ -14,7 +15,7 @@ start()
         echo "there is already a proxy running at PID $(cat /var/run/smproxy.pid)"
         exit 1
     fi
-    /usr/bin/socat TCP-LISTEN:$PROXY_PORT,reuseaddr,fork,su=nobody TCP:$CM_ADDR &
+    /usr/bin/socat TCP-LISTEN:$PROXY_PORT,reuseaddr,fork,su=nobody TCP:$CM_ADDR:$CM_PORT &
     /bin/echo $! > /var/run/smproxy.pid
 }
 

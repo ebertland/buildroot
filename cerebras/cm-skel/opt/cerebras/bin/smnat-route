@@ -5,15 +5,16 @@
 #
 
 NAME=iptablesinit
+read -r SM < /etc/sm_addr2
 
 start()
 {
-    /sbin/route add default gw 10.0.0.1
+    /sbin/route add default gw "$SM" 
 }
 
 stop()
 {
-    /sbin/route del default gw 10.0.0.1
+    /sbin/route del default gw "$SM" 
 }
 
 

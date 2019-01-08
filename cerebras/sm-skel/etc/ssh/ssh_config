@@ -19,7 +19,7 @@
 
 # Allow "ssh cm" to work.  Include keep-alives.
 Host cm
-	HostName 10.0.0.6
+	HostName @@CM_ADDR@@
 	User root
 	CheckHostIP no
 	StrictHostKeyChecking no

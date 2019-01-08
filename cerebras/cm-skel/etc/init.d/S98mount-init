@@ -4,8 +4,9 @@
 # COPYRIGHT 2018, Cerebras Systems, Inc.
 #
 
-SM_ETH2=10.0.0.1
-NFS_EXPORT=$SM_ETH2:/
+read -r SM < /etc/sm_addr2
+
+NFS_EXPORT="$SM":/
 NFS_DIR=/nfs
 
 is_nfs_mounted()

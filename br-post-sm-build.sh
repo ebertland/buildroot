@@ -39,12 +39,12 @@ auto eth0
 iface eth0 inet dhcp
 auto eth2
 iface eth2 inet static
-    address 10.0.0.1
-    netmask 255.255.255.252
+    address @@SM_ADDR2@@
+    netmask @@NETMASK@@
 auto eth3
 iface eth3 inet static
-    address 10.0.0.5
-    netmask 255.255.255.252
+    address @@SM_ADDR@@
+    netmask @@NETMASK@@
 EOM
 
 #
@@ -73,3 +73,5 @@ PermitEmptyPasswords yes
 X11Forwarding yes
 XauthLocation /usr/bin/xauth
 EOF
+
+$TOPDIR/br-post-cm-sm-addrs.sh "$TARGET"

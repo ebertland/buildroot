@@ -10,7 +10,7 @@ TOPDIR=$(pwd)
 echo "Running Cerebras CM post build script..."
 echo "----------------------------------------"
 
-echo "Copying Cerebras SM skeleton files"
+echo "Copying Cerebras CM skeleton files"
 tar -C $TOPDIR/cerebras/cm-skel -cf - . | (cd $TARGET && tar xf -)
 
 #
@@ -26,12 +26,12 @@ auto lo
 iface lo inet loopback
 auto ni0
 iface ni0 inet static
-    address 10.0.0.6
-    netmask 255.255.255.252
+    address @@CM_ADDR@@
+    netmask @@NETMASK@@
 auto ni1
 iface ni1 inet static
-    address 10.0.0.2
-    netmask 255.255.255.252
+    address @@CM_ADDR2@@
+    netmask @@NETMASK2@@
 EOM
 
 #
@@ -60,3 +60,5 @@ PermitEmptyPasswords yes
 X11Forwarding yes
 XauthLocation /usr/bin/xauth
 EOF
+
+$TOPDIR/br-post-cm-sm-addrs.sh "$TARGET"

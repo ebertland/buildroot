@@ -1,1 +1,1 @@
-/shared/mntcm   10.0.0.2(fsid=0,rw,sync,no_subtree_check)
+/shared/mntcm   @@CM_ADDR2@@(fsid=0,rw,sync,no_subtree_check)
