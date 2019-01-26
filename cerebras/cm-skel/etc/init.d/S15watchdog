@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# watchdog       Run the CM watchdog
+#
+
+#
+# Copyright 2019, Cerebras Systems, Inc.  All rights reserved.
+#
+
+WATCHDOG_TIMEOUT="10"
+WATCHDOG_UPDATE="1"
+
+if [ -r /etc/default/watchdog ]
+then
+    . /etc/default/watchdog
+fi
+
+case "$1" in
+    start)
+        printf "Starting watchdog: "
+        /sbin/watchdog -T "$WATCHDOG_TIMEOUT" -t "$WATCHDOG_UPDATE" \
+		       /dev/watchdog
+        [ $? = 0 ] && echo "OK" || echo "FAIL"
+        ;;
+    stop)
+        ;;
+    reload|restart)
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|reload}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0
