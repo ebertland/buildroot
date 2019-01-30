@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# System tuning
+#
+
+case "$1" in
+    start)
+	printf "System tuning: "
+	/sbin/sysctl --system
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+	;;
+    stop)
+	;;
+    restart|reload)
+	;;
+    *)
+	echo "Usage: $0 {start|stop|restart|reload}"
+	exit 1
+esac
+
+exit $?
