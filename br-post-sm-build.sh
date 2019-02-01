@@ -24,6 +24,9 @@ fi
 echo "Copying Cerebras SM skeleton files"
 tar -C $TOPDIR/cerebras/sm-skel -cf - . | (cd $TARGET && tar xf -)
 
+echo "Making the NFS4 client recovery dir"
+mkdir -p $TARGET/var/lib/nfs/v4recovery
+
 #
 # Following probably should be done in a script and not part of interfaces file
 #

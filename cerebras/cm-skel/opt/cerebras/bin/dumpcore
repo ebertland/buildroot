@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Maximum number of old core files and space taken up by them
+MAX_OLD_CORE_GB=30
+MAX_OLD_CORE_COUNT=30
+
+destfile="$1"
+
+destdir="$(dirname "$1")"
+
+if [ "$destdir" != '.' ]; then
+    if ! [ -d "$destdir" ]; then
+	mkdir -p "$destdir"
+    fi
+
+    # Purge oldest cores
+    ncores="$MAX_OLD_CORE_COUNT"
+    corespace=$((MAX_OLD_CORE_GB << 30))
+    while read -r oldcore; do
+	oldcore="${destdir}/${oldcore}"
+	if [ -f "$oldcore" ]; then
+	    ncores=$((ncores - 1))
+	    corespace=$((corespace - $(stat --printf '%s' "$oldcore")))
+	    if [[ $ncores -le 0 ]] || [[ $corespace -le 0 ]]; then
+		rm -f "$oldcore"
+	    fi
+	fi
+    done < <(cd "$destdir"/. && ls -t)
+fi
+    
+exec pigz -c > "$destfile"

@@ -1,0 +1,156 @@
+#!/bin/bash
+
+#
+# COPYRIGHT 2018-2019, Cerebras Systems, Inc.
+#
+
+read -r SM < /etc/sm_addr2
+
+NFS_EXPORT="$SM":/
+NFS_DIR=/nfs
+NFS_OPTIONS="noatime,nodiratime,nolock"
+NFS_PREP_CMD=""
+NFS_REMOTE_CFG="/etc/nfs_init.cfg"
+NFS_CORE_SCRIPT="/opt/cerebras/bin/dumpcore"
+NFS_CORE_FILENAME="core.%e.%p.%t.gz"
+
+dlfile()
+{
+    srcfile="$(basename "$1")"
+    /usr/bin/tftp -l "${1}.new" -r /"$srcfile" -g "$SM"
+    retv="$?"
+
+    if [ "$retv" = "0" ]; then
+        if [ -f "$1" ]; then
+            rm -f "${1}.old"
+            ln -f "${1}" "${1}.old"
+        fi
+        mv -f "${1}.new" "$1"
+    fi
+
+    return $retv
+}
+
+
+is_nfs_mounted()
+{
+    local dir="$1"
+    local dirfs="$(stat -f --printf '%T' "${dir}/.")"
+
+    if [[ "$dirfs" != "nfs" ]]; then
+	return 1
+    fi
+
+    return 0
+}
+
+mount_nfs_on_dir()
+{
+    local dir="$1"
+    local nfsexport="$2"
+
+    mkdir -p "$dir"
+
+    if is_nfs_mounted "$dir"; then
+	return 0
+    fi
+
+    mount -t nfs4 -o "$NFS_OPTIONS" "$nfsexport" "$dir"
+    if [[ $? -ne 0 ]]; then
+        echo "failed to mount (nfs) $dir"
+        return 1
+    fi
+    return 0
+}
+
+move_syslog_to_nfs()
+{
+    local dir="$1"
+
+    mkdir -p "$dir"
+
+    if ! is_nfs_mounted "$dir"; then
+	return 1
+    fi
+
+    if is_nfs_mounted "/var/log"; then
+	return 0
+    fi
+
+    /etc/init.d/S01logging stop
+
+    mkdir -p "$dir"/log
+    if [ -e /var/log/messages ]; then
+	dd if=/var/log/messages of="$dir"/log/messages \
+	   bs=1M conv=notrunc oflag=append status=none
+	if [[ $? -ne 0 ]]; then
+	    return 1
+	fi
+	rm -f /var/log/messages
+    fi
+
+    # /var/log may be a symlink to /tmp
+    rm -f /var/log
+
+    mkdir -p /var/log
+    if ! mount -o bind "$dir"/log /var/log ; then
+	return 1
+    fi
+
+    if ! mkdir -p /var/log/cores ; then
+	return 1
+    fi
+
+    sysctl -q -w kernel.core_pattern="|${NFS_CORE_SCRIPT} /var/log/cores/${NFS_CORE_FILENAME}"
+
+    /etc/init.d/S01logging start
+    return $?
+}
+
+
+start()
+{
+    declare -g NFS_EXPORT
+    declare -g NFS_DIR
+    declare -g NFS_PREP_CMD
+    declare -g NFS_OPTIONS
+
+    # The remote config can be used to mount from a different source
+    # and specify commands to be run.
+    if [ -n "$NFS_REMOTE_CFG" ]; then
+	dlfile "$NFS_REMOTE_CFG"
+	if [ -e "$NFS_REMOTE_CFG" ]; then
+	    echo -n "Loading remote config.. "
+	    source "$NFS_REMOTE_CFG"
+	    [[ $? -eq  0 ]] && echo "OK" || echo "FAIL"
+	fi
+    fi
+    
+    if [ -n "$NFS_PREP_CMD" ]; then
+	echo -n "Running NFS prep command.. "
+	eval "$NFS_PREP_CMD"
+	[[ $? -eq  0 ]] && echo "OK" || echo "FAIL"
+    fi
+
+    echo -n "Mounting $NFS_EXPORT on $NFS_DIR.. "
+    mount_nfs_on_dir "$NFS_DIR" "$NFS_EXPORT"
+    [[ $? -eq  0 ]] && echo "OK" || echo "FAIL"
+
+    echo -n "Moving logging to NFS.. "
+    move_syslog_to_nfs "$NFS_DIR"
+    [[ $? -eq  0 ]] && echo "OK" || echo "FAIL"
+}
+
+case "$1" in
+    start)
+        start
+	;;
+    stop|restart|reload)
+	# Since this is used for logging; we can't disable it
+	;;
+    *)
+        echo "Usage: %0 {start|stop|restart}"
+        exit 1
+esac
+
+exit $?
