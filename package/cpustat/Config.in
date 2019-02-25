@@ -1,0 +1,13 @@
+config BR2_PACKAGE_CPUSTAT
+
+	bool "cpustat"
+
+	help
+	    cpustat periodically dumps out the current CPU utilisation
+	    statistics of running processes. cpustat has been optimised
+	    to have a minimal CPU overhead and typically uses about 35%
+	    of the CPU compared to top. cpustat also includes some simple
+	    statistical analysis options that can help characterise the
+	    way CPUs are being loaded.
+
+	    https://github.com/ColinIanKing/cpustat
