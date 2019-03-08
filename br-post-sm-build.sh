@@ -78,3 +78,7 @@ XauthLocation /usr/bin/xauth
 EOF
 
 $TOPDIR/br-post-cm-sm-addrs.sh "$TARGET"
+
+echo "Un-symlink /var"
+rm ${TARGET}/var/log
+mkdir ${TARGET}/var/log
