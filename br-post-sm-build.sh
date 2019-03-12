@@ -80,5 +80,5 @@ EOF
 $TOPDIR/br-post-cm-sm-addrs.sh "$TARGET"
 
 echo "Un-symlink /var"
-rm ${TARGET}/var/log
+rm -rf ${TARGET}/var/log
 mkdir ${TARGET}/var/log
