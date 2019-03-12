@@ -127,6 +127,10 @@ CONFIG_CONFIG_IN = Config.in
 CONFIG = support/kconfig
 DATE := $(shell date +%Y%m%d)
 
+# Cerebras build info
+CB_DATE := $(shell date --utc --rfc-3339=seconds)
+CB_BRANCH := $(shell git symbolic-ref --short -q HEAD 2>/dev/null || :)
+
 # Compute the full local version string so packages can use it as-is
 # Need to export it, so it can be got from environment in children (eg. mconf)
 export BR2_VERSION_FULL := $(BR2_VERSION)$(shell $(TOPDIR)/support/scripts/setlocalversion)
@@ -764,7 +768,9 @@ endif
 		echo "VERSION=$(BR2_VERSION_FULL)"; \
 		echo "ID=buildroot"; \
 		echo "VERSION_ID=$(BR2_VERSION)"; \
-		echo "PRETTY_NAME=\"Buildroot $(BR2_VERSION)\"" \
+		echo "PRETTY_NAME=\"Buildroot $(BR2_VERSION)\""; \
+		echo "CB_DATE=\"$(CB_DATE)\""; \
+		echo "CB_BRANCH=\"$(CB_BRANCH)\""; \
 	) >  $(TARGET_DIR)/usr/lib/os-release
 	ln -sf ../usr/lib/os-release $(TARGET_DIR)/etc
 
