@@ -1,5 +1,10 @@
 #!/bin/bash -p
 
+#
+# COPYRIGHT 2019 Cerebras Systems, Inc.
+#
+
+Q=
 SYNCCMD="rsync -avz --delete"
 # BUILD_HOST=server3.cerebras.aws
 BUILD_HOST=${BUILD_HOST:-builder}
@@ -34,14 +39,21 @@ sync_with_remote()
     find_linaro_ver || fail
 
     REMOTE_BUILD_HOST_TOOLCHAIN_DIR=$REMOTE_BUILD_HOST_HOME/$LINARO_VER/gcc
-    REMOTE_BUILD_HOST_SYSROOT_DIR=$REMOTE_BUILD_HOST_HOME/$LINARO_VER/
+    REMOTE_BUILD_HOST_SYSROOT_DIR=$REMOTE_BUILD_HOST_HOME/$LINARO_VER
 
     # copy gcc to remote directory
     echo "Copying gcc to $BUILD_HOST:$REMOTE_BUILD_HOST_TOOLCHAIN_DIR/." && \
-    $SYNCCMD $LOCAL_BR_TOOLCHAIN_DIR/* tejas@$BUILD_HOST:$REMOTE_BUILD_HOST_TOOLCHAIN_DIR/. && \
+    $Q $SYNCCMD $LOCAL_BR_TOOLCHAIN_DIR/* tejas@$BUILD_HOST:$REMOTE_BUILD_HOST_TOOLCHAIN_DIR/. && \
     # copy sysroot to remote directory
     echo "Copying sysroot to $BUILD_HOST:$REMOTE_BUILD_HOST_SYSROOT_DIR" && \
-    $SYNCCMD $LOCAL_BR_SYSROOT_DIR tejas@$BUILD_HOST:$REMOTE_BUILD_HOST_SYSROOT_DIR/. || fail
+    $Q $SYNCCMD $LOCAL_BR_SYSROOT_DIR tejas@$BUILD_HOST:$REMOTE_BUILD_HOST_SYSROOT_DIR/. || fail
 }
+
+while getopts "n" opt; do
+    case $opt in
+        n) Q=echo ;;
+    esac
+done
+shift $((OPTIND - 1))
 
 sync_with_remote
